@@ -21,6 +21,22 @@
  */
 
 	/* eslint-disable no-console */
+let showLevel = document.getElementById("showLevel");
+let hideLevel = document.getElementById("hideLevel");
+let hideLevelContainer = document.getElementById("hideLevelContainer");
+showLevel.addEventListener("click", function(event) {
+	hideLevelContainer.classList.add("show");
+	hideLevelContainer.classList.remove("hide");
+	showLevel.classList.add("hide");
+	showLevel.classList.remove("show-inline");
+});
+hideLevel.addEventListener("click", function(event) {
+	hideLevelContainer.classList.add("hide");
+	hideLevelContainer.classList.remove("show");
+	showLevel.classList.add("show-inline");
+	showLevel.classList.remove("hide");
+});
+
 let elementsArrayShow = document.querySelectorAll('.button-show');
 
 elementsArrayShow.forEach(function(elem) {

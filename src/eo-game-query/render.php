@@ -10,6 +10,10 @@ $locationURL = get_query_var('location');
 $authorURL = get_query_var('author');
 $bgColor = $attributes['bgColor'];
 $cityMapLinks = $attributes['cityArray'];
+$locations = get_terms(array(
+    'taxonomy' => 'location',
+    'hide_empty' => true
+));
 //print_r($cityMapLinks);
 ?>
 
@@ -23,12 +27,35 @@ if (!$cityURL && !$locationURL && !$authorURL) {?>
 	?>
 	<p <?php echo get_block_wrapper_attributes(); ?>>
 	<h2>Find A Game</h2>
+    <div>Search for games by location <span class="small">- this list includes games that need testing</span>.</div>
 		<h3>Cities</h3>
 		<?php if ( !empty($cities) ) {
 			echo '<ul>';
 			foreach ( $cities as $city ) {
-				echo '<li><a href="'. site_url() . '/find-a-game/?city=' . $city->slug . '">' . $city->name . '</a> (' . $city->count . ')</li>';
-			}
+				/*echo '<li><a href="'. site_url() . '/find-a-game/?city=' . $city->slug . '">' . $city->name . '</a> (' . $city->count . ')';*/
+                echo '<li>' . $city->name;
+                $cityName = str_replace(' ', '-', strtolower($city->name));
+
+                foreach ($locations as $location) {
+                    /*echo '<br />slug: ' . $location->slug . ', ';
+                    echo '<br />city: ' . $city->name . ', ';
+                    echo '<br />cityName: ' .  $cityName . ', ';*/
+                    if (str_contains($location->slug, $cityName)) {
+                        echo '<br /><a href="' . site_url() . '/find-a-game/?location=' . $location->slug . '">' . $location->name . '</a> (' . $location->count . ')';
+                    } else {
+                        echo '';
+                    }
+                }
+                foreach ( $cityMapLinks as $mapLink ) {
+                    if ($mapLink['name'] === $cityName) {
+                        echo '<div class="map-link"><a href="' . $mapLink['link'] . '">map of games for ' . $city->name . '</a></div>';
+                        break;
+                    } else {
+                        echo '';
+                    }
+                }
+                echo '</li>';
+            }
 			echo '</ul>';
 		}?>
 	</p>
@@ -38,7 +65,8 @@ if (!$cityURL && !$locationURL && !$authorURL) {?>
 	$cityURLstrip = strtr($cityURL, '-', ' ');?>
 	<p <?php echo get_block_wrapper_attributes(); ?>>
 	<h2>Find A Game</h2>
-	<div>City: <?php echo ucwords($cityURLstrip) ;?></div>
+    <div>Search for games by location <span class="small">- this list includes games that need testing</span>.</div>
+    <div>City: <?php echo ucwords($cityURLstrip) ;?></div>
 	<?php
 	foreach ( $cityMapLinks as $mapLink ) {
 		if ($mapLink['name'] === $cityURL) {
@@ -87,7 +115,24 @@ if (!$cityURL && !$locationURL && !$authorURL) {?>
 				<button style="color:<?php echo $attributes['linkColor']?>;background-color:<?php echo $attributes['bgColor']?>" class="eo-test-game-show  button-show hide" data-name="eo-test-game">show testing</button></div>
 		</div>
 	</div>
-	<div>Location: <?php echo ucwords($locationURLstrip) ;?></div>
+
+
+    <div>Games that need testing are last on list.<br />
+        Use controls to filter by level:
+        <button style="color:<?php echo $attributes['linkColor']?>;background-color:<?php echo $attributes['bgColor']?>" id="showLevel" class="show-inline">what are levels?</button>
+        <div id="hideLevelContainer" class="hide">
+            Each game has a skill level:
+            <ul>
+                <li>Level 0 – very easy, play to learn how game works</li>
+                <li>Level 1 – similar to a scavenger hunt with a little deduction</li>
+                <li>Level 2 – some scavenger hunt style puzzles and more deduction</li>
+                <li>Level 3 – more complicated puzzles with most requiring deduction</li>
+            </ul>
+            <button style="color:<?php echo $attributes['linkColor']?>;background-color:<?php echo $attributes['bgColor']?>" id="hideLevel" class="">hide level info</button>
+        </div>
+    </div>
+    <div>Location: <?php echo ucwords($locationURLstrip) ;?></div>
+
 <?php } ?>
 <?php
 if ($cityURL || $locationURL || $authorURL) {

@@ -40,6 +40,9 @@
 .show {
 	display:block;
 }
+.show-inline {
+	display:inline-block;
+}
 .inline-button {
 	display: block;
 	width:15%;
@@ -99,8 +102,7 @@
 	justify-content: flex-start;
 }
 .map-link {
-	margin:0;
-	margin-block-start: 0!important;
+	margin-top: 1em;
 }
 @media (max-width:740px) {
 	.flex-games {
